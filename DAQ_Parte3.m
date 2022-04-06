@@ -1,22 +1,22 @@
 %% INSTRUMENTAÇÃO E MEDIDAS - LABORATORIO AQUISIÇÃO DE SINAIS
-%Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
+% Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
 
-%Dados iniciais
+% Dados iniciais
 A = 2; %amplitude do sinal (dada em aula)
 f_sinal = 200; %frequencia do sinal (dada em aula)
 
-%Dados iniciais para a placa
+% Dados iniciais para a placa
 Fs = 40000; %frequencia de amostragem (dada em aula)
 N_amostras = 800; %no, de amostras (dada em aula)
 
-% -Resolucao temporal
+% Resolucao temporal
 Ts = 1/Fs;
 
-% -Resolucao espectral
+% Resolucao espectral
 F0 = Fs/N_amostras;
 T0=1/F0;
 
-%variável no tempo e frequência
+% Variável no tempo e frequência
 t=(0:Ts:T0-Ts)'; 
 f=(0:F0:F0*(ceil(N_amostras/2)-1));
 
