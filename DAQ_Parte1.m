@@ -2,12 +2,12 @@
 % Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
 
 % Dados iniciais
-A = 3.5; %amplitude do sinal (dada em aula)
-f_sinal = 900; %frequência do sinal (dada em aula)
-N_amostras = 5000; %no. de amostras (dada em aula)
-Fs = 36000; %frequência de amostragem (dada em aula)
+A = 3.5; % amplitude do sinal (dada em aula)
+f_sinal = 900; % frequência do sinal (dada em aula)
+N_amostras = 5000; % no. de amostras (dada em aula)
+Fs = 36000; % frequência de amostragem (dada em aula)
 
-% Informacao da placa de aquisicao (APAGAR)
+% Informacao da placa de aquisição (APAGAR)
 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Nbits=12;
 Amax=10;
@@ -28,14 +28,13 @@ Delta=2*Amax/(2^Nbits); %dado para testes
 % Resolucao temporal
 Ts = 1/Fs;
 
-% Resolucao espectral
+% Resolução espectral
 F0 = Fs/N_amostras;
 T0=1/F0;
 
 % Variável no tempo e frequência
 t=(0:Ts:T0-Ts)'; 
 f=(0:F0:F0*(ceil(N_amostras/2)-1));
-
 
 % Funções de teste
 %xt=A*cos(2*pi*f_sinal*t);
@@ -45,7 +44,6 @@ xt=A*sawtooth(2*pi*f_sinal*t,0.5);
 % Simular placa de aquisição
 data_t=floor(xt/Delta)*Delta+Delta/2;
 %data_t=xt;
-
 
 % Obter máximo e posição da fft
 dataf = abs(fft(data_t))/N_amostras; 
@@ -95,7 +93,7 @@ n_harmonicas=floor((N_amostras/2-2)/PosfH); %número de harmónicas
 amplitude_harmonica=zeros(1, n_harmonicas+1);
 amplitude_harmonica_dB=zeros(1, n_harmonicas+1);
 
-% Espetro do sinal, normalizado e unilaterlizado
+% Espetro do sinal, normalizado e unilateralizado
 dataf = abs(fft(data_t))/N_amostras;
 dataf=2*dataf(1:floor(N_amostras/2)); 
 dataf(1)=dataf(1)/2;
@@ -117,7 +115,7 @@ for n=2:n_harmonicas+1 %print amplitude harmonica dB
     %fprintf(1,'Amplitude em dB da harmonica de tensao nr %d = %.4f \n',n-1,amplitude_harmonica_dB(n));
 end
 
-%% Calculo da distorção harmónica total (THD)
+%% Cálculo da distorção harmónica total (THD)
 sum_minor=sum(amplitude_harmonica(3:n_harmonicas+1).^2);
 THD = 20*log10(sqrt(sum_minor/amplitude_harmonica(2)^2)); %pois a amplitude_harmonica(1) tem a componente DC 
 
