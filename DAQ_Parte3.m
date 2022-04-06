@@ -2,17 +2,17 @@
 % Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
 
 % Dados iniciais
-A = 2; %amplitude do sinal (dada em aula)
-f_sinal = 200; %frequencia do sinal (dada em aula)
+A = 2; % amplitude do sinal (dada em aula)
+f_sinal = 200; % frequencia do sinal (dada em aula)
 
 % Dados iniciais para a placa
-Fs = 40000; %frequencia de amostragem (dada em aula)
-N_amostras = 800; %no, de amostras (dada em aula)
+Fs = 40000; % frequencia de amostragem (dada em aula)
+N_amostras = 800; % no. de amostras (dada em aula)
 
-% Resolucao temporal
+% Resolução temporal
 Ts = 1/Fs;
 
-% Resolucao espectral
+% Resolução espectral
 F0 = Fs/N_amostras;
 T0=1/F0;
 
@@ -104,13 +104,13 @@ data_tpower=power(data_t2,2); % Vef=sqrt(mean(abs(data_t).^2))
 sum_all2=sum(data_tpower);
 VrmsR=sqrt(sum_all2/Navg2);
 
-%% Diferenca de fase (dif_fase)
+%% Diferença de fase (dif_fase)
 dataf1=fft(data_t1);
 dataf2=fft(data_t2);
 dif_fase = angle(dataf1(Posf1)) - angle(dataf2(Posf2));
 dif_fase=dif_fase*180/pi; %para ficar em radianos
 
-%% Calculo da impedância
+%% Cálculo da impedância
 % |Z| = Vz eficaz / I, I = Vr eficaz / R
 % logo |Z| = Vz eficaz * R / Vr eficaz 
 R=100;
