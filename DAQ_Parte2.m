@@ -6,13 +6,13 @@ A = 3; %amplitude do sinal (dada em aula)
 f_sinal = 2000; %frequência do sinal (dada em aula)
 
 % Dados iniciais para a placa
-N_amostras = 21000; %no. de amostras (dada em aula)
-Fs = 40001; %frequencia de amostragem (dada em aula)
+N_amostras = 21000; % no. de amostras (dada em aula)
+Fs = 40001; % frequência de amostragem (dada em aula)
 
-% Resolucao temporal
+% Resolução temporal
 Ts = 1/Fs;
 
-% Resolucao espectral
+% Resolução espectral
 F0 = Fs/N_amostras;
 T0=1/F0;
 
@@ -20,7 +20,7 @@ T0=1/F0;
 t=(0:Ts:T0-Ts)'; 
 f=(0:F0:F0*(ceil(N_amostras/2)-1));
 
-% Informacao da placa de aquisicao APAGAR
+% Informação da placa de aquisicao APAGAR
 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Nbits=14;
 Amax=10;
@@ -88,22 +88,22 @@ dataf_avg = dataf_avg / N_ciclos;
 % Período estimado
 T=1/f_estimada; 
 
-% Calculo do Navg - média do numero de amostras; util quando o numero de amostras e reduzido
+% Cálculo do Navg - média do numero de amostras; util quando o numero de amostras e reduzido
 nppp = Fs/f_estimada;   	% no. de pontos por periodo			   
 nperiodos=floor(N_amostras/nppp);		 % num de periodos
 Navg=nperiodos*nppp;
 
-% Calculo da média 
+% Cálculo da média 
 sum_all=sum(data_t);
 media=sum_all/Navg;
 
-% Calculo do Valor eficaz  
+% Cálculo do Valor eficaz  
 data_tpower=power(data_t,2); % Vef=sqrt(mean(abs(data_t).^2))
 sum_all2=sum(data_tpower);
 Vrms=sqrt(sum_all2/Navg);
 
 
-%% Calculo do ruído médio eficaz
+%% Cálculo do ruído médio eficaz
 % Naturalmente é necessário retirar as harmónicas do espectro médio de potência
 % no nosso caso temos uma sinusoide, bastava retirar a fundamental, 
 % mas o raciocinio está generalizado (no for loop anterior removemos todas as harmónicas do Gn)
@@ -120,7 +120,7 @@ nQ = sum(Gm); % ruído de quantização (ruido medio)
 nQ = sqrt(nQ); 
 
 
-%% Calculo de SINAD e no. bits estimado da placa de aquisição (ENOB)
+%% Cálculo de SINAD e no. bits estimado da placa de aquisição (ENOB)
 SINAD=dataf_avg(Posf)/(sum(dataf_avg)-dataf_avg(Posf));
 SINAD=10*log10(SINAD);
 % Calculo de Numero de bits estimado da placa, 
