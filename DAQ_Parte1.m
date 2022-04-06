@@ -1,14 +1,13 @@
 %% INSTRUMENTAÇÃO E MEDIDAS - LABORATORIO AQUISIÇÃO DE SINAIS
-%Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
-%Parte I: aquisição de um sinal
+% Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
 
-%Dados iniciais
+% Dados iniciais
 A = 3.5; %amplitude do sinal (dada em aula)
 f_sinal = 900; %frequência do sinal (dada em aula)
 N_amostras = 5000; %no. de amostras (dada em aula)
 Fs = 36000; %frequência de amostragem (dada em aula)
 
-%Informacao da placa de aquisicao (APAGAR)
+% Informacao da placa de aquisicao (APAGAR)
 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Nbits=12;
 Amax=10;
@@ -38,12 +37,12 @@ t=(0:Ts:T0-Ts)';
 f=(0:F0:F0*(ceil(N_amostras/2)-1));
 
 
-%Funções de teste
+% Funções de teste
 %xt=A*cos(2*pi*f_sinal*t);
 xt=A*sawtooth(2*pi*f_sinal*t,0.5);
 %xt=A*square(2*pi*f_sinal*t);
 
-%Simular placa de aquisição
+% Simular placa de aquisição
 data_t=floor(xt/Delta)*Delta+Delta/2;
 %data_t=xt;
 
