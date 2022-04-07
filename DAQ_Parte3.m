@@ -37,15 +37,15 @@ Delta=2*Amax/(2^Nbits);
 %Fs=sinal.Properties.SampleRate;
 
 % Sinais de teste 
-xt1 = cos(2*pi*f_sinal*t + pi/2); %sinal da impedância
-xt2 = A * cos(2*pi*f_sinal*t); %sinal da resistência
-data_t1=floor(xt1/Delta)*Delta+Delta/2; %sinla na impedância desconhecida Z
+xt1 = cos(2*pi*f_sinal*t + pi/2);       %sinal da impedância
+xt2 = A * cos(2*pi*f_sinal*t);          %sinal da resistência
+data_t1=floor(xt1/Delta)*Delta+Delta/2; %sinal na impedância desconhecida Z
 data_t2=floor(xt2/Delta)*Delta+Delta/2; %sinal na resistência R
 %data_t1=xt1;
 %data_t2=xt2;
 
 %% Estimação da frequência
-%---> estimar frequencia do sinal 1
+%---> estimar frequência do sinal 1.
 dataf1 = abs(fft(data_t1))/N_amostras;
 [M1,Posf1]=max(dataf1(1:floor(N_amostras/2),1));
 media = 0;
@@ -54,8 +54,9 @@ norm = 0;
 if (Posf1>3)
     for m=Posf1-3:Posf1+3
         norm = norm + dataf1(m);
-        media = media +(m-1)*dataf1(m)*F0; % (m-1)*F0 é a frequencia da harmonica e dataf(m) é a sua respectiva amplitude.
-                                        %(m-1) representa o nr de "subdivisoes" até à harmonica
+        media = media +(m-1)*dataf1(m)*F0; 
+        % (m-1)*F0 é a frequencia da harmonica e dataf(m) é a sua respectiva amplitude.
+        %(m-1) representa o nr de "subdivisoes" até à harmonica.
     end
         f_estimada1 = media/norm;
 else % No caso de estar proximo da origem e não dar para fazer média ponderada:
@@ -73,8 +74,9 @@ norm = 0;
 if (Posf2>3)
     for m=Posf2-3:Posf2+3
         norm = norm + dataf2(m);
-        media = media +(m-1)*dataf2(m)*F0; % (m-1)*F0 é a frequencia da harmonica e dataf(m) é a sua amplitude.
-                                        %(m-1) representa o nr de "subdivisoes" até à harmonica
+        media = media +(m-1)*dataf2(m)*F0; 
+        % (m-1)*F0 é a frequencia da harmonica e dataf(m) é a sua amplitude.
+        %(m-1) representa o nr de "subdivisoes" até à harmonica
     end
         f_estimada2 = media/norm;
 else % No caso de estar proximo da origem e não dar para fazer média ponderada:
@@ -85,22 +87,22 @@ T2=1/f_estimada2;
 
 %% Calculo do Navg - media do numero de amostras util quando o numero de amostras e reduzido
 %---> sinal 1
-nppp = Fs/f_estimada1;   	% num de pontos por periodo			    
+nppp = Fs/f_estimada1;   	             % num de pontos por periodo			    
 nperiodos=floor(N_amostras/nppp);		 % num de periodos
 Navg1=nperiodos*nppp;
 %---> sinal 2
-nppp = Fs/f_estimada2;   	% num de pontos por periodo			    
+nppp = Fs/f_estimada2;   	             % num de pontos por periodo			    
 nperiodos=floor(N_amostras/nppp);		 % num de periodos
 Navg2=nperiodos*nppp;
 
 
 %% Calculo do Valor eficaz do:
 %---> sinal 1
-data_tpower=power(data_t1,2); % Vef=sqrt(mean(abs(data_t).^2))
+data_tpower=power(data_t1,2);    % Vef=sqrt(mean(abs(data_t).^2))
 sum_all2=sum(data_tpower);
 VrmsZ=sqrt(sum_all2/Navg1);
 %---> sinal 2
-data_tpower=power(data_t2,2); % Vef=sqrt(mean(abs(data_t).^2))
+data_tpower=power(data_t2,2);    % Vef=sqrt(mean(abs(data_t).^2))
 sum_all2=sum(data_tpower);
 VrmsR=sqrt(sum_all2/Navg2);
 
@@ -108,24 +110,24 @@ VrmsR=sqrt(sum_all2/Navg2);
 dataf1=fft(data_t1);
 dataf2=fft(data_t2);
 dif_fase = angle(dataf1(Posf1)) - angle(dataf2(Posf2));
-dif_fase=dif_fase*180/pi; %para ficar em radianos
+dif_fase=dif_fase*180/pi; %converter em radianos.
 
 %% Cálculo da impedância
 % |Z| = Vz eficaz / I, I = Vr eficaz / R
 % logo |Z| = Vz eficaz * R / Vr eficaz 
 R=100;
 abs_Z = (VrmsZ/VrmsR)*abs(R);
-arg_Z = dif_fase + angle(R); %o angulo de R neste caso vai ser nulo obviamente 
+arg_Z = dif_fase + angle(R);    %o angulo de R neste caso vai ser nulo obviamente 
 
 %% Criar gráfico para visualização
-Amplitude=max(data_t1); %amplitude real
+Amplitude=max(data_t1);         %amplitude real
 if (Amplitude<max(data_t2))
     Amplitude=max(data_t2);
 end
 
 subplot(111);
 plot(t, data_t1,'r', t, data_t2, 'b'); 
-str=sprintf('Frequência do sinal de R: %g, Frequência do sinal de Z: %g, Valor eficaz de R: %g, Valor eficaz de Z: %g, Diferença de fase dos dois sinais: %g \n Número de Amostras: %g, Frequência de amostragem: %g, Alcance: [-%g, %g] V',f_estimada2, f_estimada1, VrmsR, VrmsZ, dif_fase, N_amostras, Fs, Amax, Amax);
+str=sprintf('Frequência do sinal de R: %g, Frequência do sinal de Z: %g,\n Valor eficaz de R: %g, Valor eficaz de Z: %g,\n Diferença de fase dos dois sinais: %g, Número de Amostras: %g,\n Frequência de amostragem: %g, Alcance: [-%g, %g] V',f_estimada2, f_estimada1, VrmsR, VrmsZ, dif_fase, N_amostras, Fs, Amax, Amax);
 title(str);
 xlabel('t [s]')
 xl = get(gca,'xlabel');

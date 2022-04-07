@@ -2,10 +2,10 @@
 % Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
 
 % Dados iniciais
-A = 3.5; % amplitude do sinal (dada em aula)
-f_sinal = 900; % frequência do sinal (dada em aula)
-N_amostras = 5000; % no. de amostras (dada em aula)
-Fs = 36000; % frequência de amostragem (dada em aula)
+A = 3.5;            % amplitude do sinal (dada em aula)
+f_sinal = 900;      % frequência do sinal (dada em aula)
+N_amostras = 5000;  % no. de amostras (dada em aula)
+Fs = 36000;         % frequência de amostragem (dada em aula)
 
 % Informacao da placa de aquisição (APAGAR)
 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -57,11 +57,13 @@ norm = 0;
 if (Posf>3)
     for m=Posf-3:Posf+3
         norm = norm + dataf(m);
-        media = media +(m-1)*dataf(m)*F0; % (m-1)*F0 é a frequencia da harmonica e dataf(m) é a sua respectiva amplitude.
-                                        %(m-1) representa o no. de "subdivisoes" até à harmónica
+        media = media +(m-1)*dataf(m)*F0;   
+        % (m-1)*F0 é a frequencia da harmonica e dataf(m) é a sua respectiva amplitude.
+        % (m-1) representa o no. de "subdivisoes" até à harmónica.
     end
         f_estimada = media/norm;
-else % No caso de estar proximo da origem e não dar para fazer média ponderada:
+else 
+    % No caso de estar proximo da origem e não dar para fazer média ponderada:
     f_estimada = (Posf-1)* F0;
 end
 
@@ -71,7 +73,7 @@ T=1/f_estimada;
 %% Calculo da media
 % Calculo do Navg - media do numero de amostras (reduz o espalhamento)
 
-nppp = Fs/f_estimada;   	% num de pontos por periodo			    
+nppp = Fs/f_estimada;   	             % num de pontos por periodo			    
 nperiodos=floor(N_amostras/nppp);		 % num de periodos
 Navg=nperiodos*nppp;
 
@@ -87,7 +89,7 @@ Vrms=sqrt(sum_all2/Navg);
 
 %% Calculo das harmónicas
 % Descobrir o número total de harmónicas
-PosfH=f_estimada/F0; %Posf da fundamental +1
+PosfH=f_estimada/F0;                        %Posf da fundamental +1
 n_harmonicas=floor((N_amostras/2-2)/PosfH); %número de harmónicas
 % Vetores para armanezar o resultado final
 amplitude_harmonica=zeros(1, n_harmonicas+1);
@@ -100,7 +102,8 @@ dataf(1)=dataf(1)/2;
 
 % Colocar harmónicas nos vetores
 for l=1:n_harmonicas+1
-    amplitude_harmonica(l)=dataf(round((l-1)*PosfH)+1)/sqrt(2); %divide-se por sqrt(2) para ficar valor eficaz
+    amplitude_harmonica(l)=dataf(round((l-1)*PosfH)+1)/sqrt(2); 
+    %divide-se por sqrt(2) para ficar valor eficaz
     amplitude_harmonica_dB(l)=20*log10(dataf(round((l-1)*PosfH)+1));
 end
 
@@ -117,14 +120,15 @@ end
 
 %% Cálculo da distorção harmónica total (THD)
 sum_minor=sum(amplitude_harmonica(3:n_harmonicas+1).^2);
-THD = 20*log10(sqrt(sum_minor/amplitude_harmonica(2)^2)); %pois a amplitude_harmonica(1) tem a componente DC 
+THD = 20*log10(sqrt(sum_minor/amplitude_harmonica(2)^2)); 
+%pois a amplitude_harmonica(1) tem a componente DC 
 
 %% Criar gráfico temporal
-Amplitude=max(data_t); %amplitude real
+Amplitude=max(data_t);  %amplitude real
 subplot(211);
 plot(t, data_t, 'color', [0 0.5 1]); 
 
-str=sprintf('Frequência: %g, Valor médio: %g, Valor eficaz: %g,\n Número de Amostras: %g, Frequência de amostragem: %g, Alcance: [%g, %g] V', f_estimada, media, Vrms, N_amostras, Fs, -Amax, Amax);
+str=sprintf('Frequência: %g, Valor médio: %g, Valor eficaz: %g,\n Alcance: [%g, %g] V, Número de Amostras: %g,\n Frequência de amostragem: %g', f_estimada, media, Vrms, N_amostras, Fs, -Amax, Amax);
 title(str);
 xlabel('t [s]')
 xl = get(gca,'xlabel');
@@ -140,17 +144,17 @@ axis([0 T*5 -1.1*Amplitude 1.1*Amplitude]) %[xmin xmax  ymin ymax]
 subplot(212);
 % Calcular espetro de potência unilateral
 dataf=fft(data_t);
-dataf_b=(abs(dataf)).^2/(N_amostras*N_amostras); %fazer o espectro de potência bilateral
-dataf_uni=2*dataf_b(1:floor((N_amostras+1)/2)); %fazer o espetro de potência unilateral
-dataf_uni(1)= dataf_uni(1)/2; %dataf_uni = dataf_b, se m == 0
-if (rem(N_amostras,2)==0) %dataf_uni = dataf_b, se m == N_amostras for par
+dataf_b=(abs(dataf)).^2/(N_amostras*N_amostras);    %fazer o espectro de potência bilateral
+dataf_uni=2*dataf_b(1:floor((N_amostras+1)/2));     %fazer o espetro de potência unilateral
+dataf_uni(1)= dataf_uni(1)/2;                       %dataf_uni = dataf_b, se m == 0
+if (rem(N_amostras,2)==0)                           %dataf_uni = dataf_b, se m == N_amostras for par
     dataf_uni(N_amostras/2)= dataf_uni(N_amostras/2)/2;
-end;
+end
 
-max2=max(10*log10(abs(dataf_uni)))+10; %valor max no plot
-min2=1.1*min(10*log10(abs(dataf_uni))); %valor min no plot
+max2=max(10*log10(abs(dataf_uni)))+10;      %valor max no plot
+min2=1.1*min(10*log10(abs(dataf_uni)));     %valor min no plot
 
-plot(f, 10*log10(dataf_uni),'color',[0 0.5 0.2]); %plot em db
+plot(f, 10*log10(dataf_uni),'color',[1 0 0]);   %plot em db
 %plot(f, dataf_uni, 'color',[0 0.5 0.2]); %plot em V^2
 
 xlabel('f [Hz]')

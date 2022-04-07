@@ -2,12 +2,12 @@
 %Grupo 1 L32 Daniel Dinis no. 99906, João Gonçalves no. 99995, Jorge Contente no. 102143
 
 % Dados iniciais
-A = 3; %amplitude do sinal (dada em aula)
+A = 3;          %amplitude do sinal (dada em aula)
 f_sinal = 2000; %frequência do sinal (dada em aula)
 
 % Dados iniciais para a placa
 N_amostras = 21000; % no. de amostras (dada em aula)
-Fs = 40001; % frequência de amostragem (dada em aula)
+Fs = 40001;         % frequência de amostragem (dada em aula)
 
 % Resolução temporal
 Ts = 1/Fs;
@@ -59,22 +59,24 @@ for l=1:N_ciclos
     if (Posf>3)
         for m=Posf-3:Posf+3
             norm = norm + dataf(m);
-            media = media +(m-1)*dataf(m)*F0; % (m-1)*Delta_f é a frequencia da harmonica e dataf(m) é a sua amplitude.
-                                        %(m-1) representa o nr de "subdivisoes" até à harmonica
+            media = media +(m-1)*dataf(m)*F0;   
+            % (m-1)*Delta_f é a frequencia da harmonica e dataf(m) é a sua amplitude.
+            % (m-1) representa o nr de "subdivisoes" até à harmonica
         end
             f_tot(l) = media/norm;
-    else % No caso de estar proximo da origem e não dar para fazer média ponderada:
+    else 
+        % No caso de estar proximo da origem e não dar para fazer média ponderada:
         f_tot(l) = (Posf-1)* F0;
     end
 
     %Calcular espetro unilateral
     dataf=fft(data_t);
-    dataf_b=(abs(dataf)).^2/(N_amostras*N_amostras); %fazer o espectro de potencia bilateral
-    dataf_uni=2*dataf_b(1:floor((N_amostras+1)/2)); %fazer o espetro de potencia unilateral
+    dataf_b=(abs(dataf)).^2/(N_amostras*N_amostras);    %fazer o espectro de potencia bilateral
+    dataf_uni=2*dataf_b(1:floor((N_amostras+1)/2));     %fazer o espetro de potencia unilateral
     dataf_uni(1)= dataf_uni(1)/2;
     if (rem(N_amostras,2)==0)
         dataf_uni(N_amostras/2)= dataf_uni(N_amostras/2)/2;
-    end;
+    end
     if l == 1
         dataf_avg = dataf_uni;
     else
@@ -89,8 +91,8 @@ dataf_avg = dataf_avg / N_ciclos;
 T=1/f_estimada; 
 
 % Cálculo do Navg - média do numero de amostras; util quando o numero de amostras e reduzido
-nppp = Fs/f_estimada;   	% no. de pontos por periodo			   
-nperiodos=floor(N_amostras/nppp);		 % num de periodos
+nppp = Fs/f_estimada;   	                % no. de pontos por periodo			   
+nperiodos=floor(N_amostras/nppp);	        % num de periodos
 Navg=nperiodos*nppp;
 
 % Cálculo da média 
@@ -98,7 +100,7 @@ sum_all=sum(data_t);
 media=sum_all/Navg;
 
 % Cálculo do Valor eficaz  
-data_tpower=power(data_t,2); % Vef=sqrt(mean(abs(data_t).^2))
+data_tpower=power(data_t,2);    % Vef=sqrt(mean(abs(data_t).^2))
 sum_all2=sum(data_tpower);
 Vrms=sqrt(sum_all2/Navg);
 
@@ -108,15 +110,15 @@ Vrms=sqrt(sum_all2/Navg);
 % no nosso caso temos uma sinusoide, bastava retirar a fundamental, 
 % mas o raciocinio está generalizado (no for loop anterior removemos todas as harmónicas do Gn)
 
-Gn = dataf_avg; %salvaguardar GMed
+Gn = dataf_avg;                             %salvaguardar GMed
 HN = floor(N_amostras/2 - 1)*F0/f_estimada; % no. de harmónicas
 for i=1:HN
     Gn(1 + round(i * f_estimada/F0)) = 0; 
 end
 Gm = power(10,10*log10(Gn)/10);
 
-nQ = sum(Gm); % ruído de quantização (ruido medio)
-%nQ=nQ-Gm(Posf); % quando temos apenas uma sinusoide (apenas um dirac no espetro de potencia unilateral)
+nQ = sum(Gm);        % ruído de quantização (ruido medio)
+%nQ=nQ-Gm(Posf);     % quando temos apenas uma sinusoide (apenas um dirac no espetro de potencia unilateral)
 nQ = sqrt(nQ); 
 
 
@@ -128,10 +130,11 @@ SINAD=10*log10(SINAD);
 Nbits_Est=(SINAD-1.76-10*log10(A^2/Amax^2))/6.02;
 
 %% Criar gráficos para visualização
-Amplitude=max(data_t); % amplitude real
+
+Amplitude=max(data_t);      % amplitude real
 subplot(211);
 plot(t, data_t, 'color', [0 0.5 1]); 
-str=sprintf('Estimativa do ruído eficaz equivalente: %g, Valor da SINAD: %gdB, Estimativa do número efetivo de bits (ENOB): %g, \nFrequência: %g, Valor eficaz: %g, Número de Amostras: %g, Frequência de amostragem: %g, Alcance: [-%g, %g] V', nQ, SINAD, Nbits_Est ,f_estimada, Vrms, N_amostras, Fs, Amax, Amax);
+str=sprintf('Estimativa do ruído eficaz equivalente: %g, \n Valor da SINAD: %gdB, Frequência: %g, \n Estimativa do número efetivo de bits (ENOB): %g, \n Valor eficaz: %g, Número de Amostras: %g,\n Frequência de amostragem: %g, Alcance: [-%g, %g] V', nQ, SINAD, Nbits_Est ,f_estimada, Vrms, N_amostras, Fs, Amax, Amax);
 title(str);
 xlabel('t [s]')
 xl = get(gca,'xlabel');
@@ -143,10 +146,10 @@ legend('Gráfico temporal')
 axis([0 T*5 -1.1*Amplitude 1.1*Amplitude]) %[xmin xmax  ymin ymax]
 
 subplot(212);
-max2=max(10*log10(abs(dataf_avg)))+20; %valor max no plot
-min2=1.1*min(10*log10(abs(dataf_avg))); %valor min no plot
-plot(f, 10*log10(dataf_avg),'*','color',[0 0.5 0.2]); %plot em db
-%plot(f, dataf_uni, 'color',[0 0.5 0.2]); %plot em V^2
+max2=max(10*log10(abs(dataf_avg)))+20;          %valor max no plot
+min2=1.1*min(10*log10(abs(dataf_avg)));         %valor min no plot
+plot(f, 10*log10(dataf_avg), 'color',[1 0 0]);  %plot em db
+%plot(f, dataf_uni, 'color',[1 0 0]);           %plot em V^2
 xl = get(gca,'xlabel');
 set(xl,'FontName','Arial','FontSize',9,'FontWeight','bold');   
 ylabel('Tensão [dB V]')
